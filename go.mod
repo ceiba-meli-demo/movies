@@ -1,4 +1,4 @@
-module github.com/james077/movies
+module github.com/ceiba-meli-demo/movies
 
 go 1.14
 
