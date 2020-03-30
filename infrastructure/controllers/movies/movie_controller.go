@@ -1,22 +1,24 @@
-package movies
+package controllers
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/ceiba-meli-demo/movies/application/commands"
 	"github.com/ceiba-meli-demo/movies/application/usescases"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
-type RedirectUserHandler interface {
+
+type RedirectMovieHandler interface {
 	Create(c *gin.Context)
 	Get(c *gin.Context)
 	FindById(c *gin.Context)
 }
 
 type Handler struct {
-	GetMoviesUseCase usescases.GetMovieUseCase
+	GetMoviesUseCase    usescases.GetMovieUseCase
 	GetMovieByIdUseCase usescases.GetMovieByIdUseCase
-	CreateMovieUseCase usescases.CreateMoviePort
+	CreateMovieUseCase  usescases.CreateMoviePort
 }
 
 //GetAll method, Find movies
@@ -55,9 +57,9 @@ func (handler *Handler) Create(c *gin.Context) {
 		c.String(501, err.Error())
 		return
 	}
-	result, createUserErr := handler.CreateMovieUseCase.Handler(movieCommand)
-	if createUserErr != nil {
-		_ = c.Error(createUserErr)
+	result, createMovieErr := handler.CreateMovieUseCase.Handler(movieCommand)
+	if createMovieErr != nil {
+		_ = c.Error(createMovieErr)
 		return
 	}
 	c.JSON(http.StatusCreated, result)
