@@ -1,10 +1,12 @@
 package app
 
 import (
-	"github.com/maik101010/movies/infrastructure/controllers"
+	"github.com/ceiba-meli-demo/movies/infrastructure/controllers"
 )
 
 func mapUrls() {
 	router.GET("/ping", controllers.Ping)
+
+
 }
 
