@@ -41,7 +41,7 @@ func (handler *Handler) FindByID(c *gin.Context) {
 		c.JSON(restErr.Status(), restErr)
 		return
 	}
-	movie, errGet := handler.GetMovieByIDUseCase.Handler(movieId)
+	movie, errGet := handler.GetMovieByIDUseCase.Handler(movieID)
 	if errGet != nil {
 		_ = c.Error(errGet)
 		return
