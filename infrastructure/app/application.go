@@ -3,7 +3,7 @@ package app
 import (
 	"github.com/ceiba-meli-demo/movies/application/usescases"
 	"github.com/ceiba-meli-demo/movies/domain/ports"
-	"github.com/ceiba-meli-demo/movies/infrastructure/controllers/movies"
+	"github.com/ceiba-meli-demo/movies/infrastructure/controllers"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -12,10 +12,9 @@ var (
 	router = gin.Default()
 )
 
-type UserMysqlRepository struct {
+type MovieMysqlRepository struct {
 	Db *gorm.DB
 }
-
 
 func StartApplication() {
 	//logger.Info("about to start the application")
@@ -27,17 +26,17 @@ func StartApplication() {
 
 }
 
-func createHandler(movieRepository ports.MovieRepository) movies.RedirectUserHandler {
+func createHandler(movieRepository ports.MovieRepository) controllers.RedirectMovieHandler {
 
 	return newHandler(newCreateMovieUseCase(movieRepository), newGetMoviesUseCase(movieRepository),
 		newFindMovieByIdUseCase(movieRepository))
 }
 
-func newHandler(createMovie usescases.CreateMoviePort, getMoviesUseCase usescases.GetMovieUseCase, getMovieById usescases.GetMovieByIdUseCase) controllers.RedirectUserHandler {
-	return &movies.Handler{
-		CreateMovieUseCase: createMovie,
-		GetMoviesUseCase: getMoviesUseCase,
-		GetMovieByIdUseCase: getMovieById,
+func newHandler(createMovie usescases.CreateMoviePort, getMoviesUseCase usescases.GetMovieUseCase, getMovieByID usescases.GetMovieByIdUseCase) controllers.RedirectMovieHandler {
+	return &controllers.Handler{
+		CreateMovieUseCase:  createMovie,
+		GetMoviesUseCase:    getMoviesUseCase,
+		GetMovieByIdUseCase: getMovieByID,
 	}
 }
 
