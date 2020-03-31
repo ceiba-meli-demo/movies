@@ -32,11 +32,11 @@ func createHandler(movieRepository ports.MovieRepository) controllers.RedirectMo
 		newFindMovieByIdUseCase(movieRepository))
 }
 
-func newHandler(createMovie usescases.CreateMoviePort, getMoviesUseCase usescases.GetMovieUseCase, getMovieByID usescases.GetMovieByIdUseCase) controllers.RedirectMovieHandler {
+func newHandler(createMovie usescases.CreateMoviePort, getMoviesUseCase usescases.GetMovieUseCase, getMovieByID usescases.GetMovieByIDUseCase) controllers.RedirectMovieHandler {
 	return &controllers.Handler{
 		CreateMovieUseCase:  createMovie,
 		GetMoviesUseCase:    getMoviesUseCase,
-		GetMovieByIdUseCase: getMovieByID,
+		GetMovieByIDUseCase: getMovieByID,
 	}
 }
 
@@ -52,7 +52,7 @@ func newGetMoviesUseCase(repository ports.MovieRepository) usescases.GetMovieUse
 	}
 }
 
-func newFindMovieByIdUseCase(repository ports.MovieRepository) usescases.GetMovieByIdUseCase {
+func newFindMovieByIdUseCase(repository ports.MovieRepository) usescases.GetMovieByIDUseCase {
 	return &usescases.UseCaseGetMovieById{
 		MovieRepository: repository,
 	}
