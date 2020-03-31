@@ -10,28 +10,33 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	Client        *mongo.Client
-	mongoHost     = os.Getenv("MONGODB_HOST")
-	mongoPort, _  = strconv.ParseInt(os.Getenv("MONGODB_PORT"), 10, 64)
-	mongoUsername = os.Getenv("MONGODB_USERNAME")
-	mongoPassword = os.Getenv("MONGODB_PASSWORD")
+const (
+	Host     = "MONGODB_HOST"
+	Port     = "MONGODB_PORT"
+	//Username
+	Username = "MONGODB_USERNAME"
+	//Password
+	Password = "MONGODB_PASSWORD"
+	Schema   = "MONGODB_SCHEMA"
 )
+var (
+	Client *mongo.Client
+	)
 
-func init() {
-	var error error
+func init(){
+	var err error
+	mongoHost     := Host
+	mongoPort, _  := strconv.ParseInt(Port, 10, 64)
+	mongoUsername := os.Getenv(Username)
+	mongoPassword := os.Getenv(Password)
 	dataSource := fmt.Sprintf("mongodb://%s:%s@%s:%d", mongoUsername, mongoPassword, mongoHost, mongoPort)
 	clientOptions := options.Client().ApplyURI(dataSource)
-
-	Client, error = mongo.Connect(context.TODO(), clientOptions)
-
-	if error != nil {
-		panic(error)
+	Client, err = mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		panic(err)
 	}
-
-	error = Client.Ping(context.TODO(), nil)
-
-	if error != nil {
-		panic(error)
+	err = Client.Ping(context.TODO(), nil)
+	if err != nil {
+		panic(err)
 	}
 }

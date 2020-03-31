@@ -3,8 +3,10 @@ package app
 import (
 	"github.com/ceiba-meli-demo/movies/application/usescases"
 	"github.com/ceiba-meli-demo/movies/domain/ports"
+	"github.com/ceiba-meli-demo/movies/infrastructure/adapters/repository/movies"
 	"github.com/ceiba-meli-demo/movies/infrastructure/app/middlewares/error_handler"
 	"github.com/ceiba-meli-demo/movies/infrastructure/controllers"
+	"github.com/ceiba-meli-demo/movies/infrastructure/database_client"
 
 	//Guión bajo usado por propositos de testear la conexión. Modificar cuando se vaya a implementar
 	_ "github.com/ceiba-meli-demo/movies/infrastructure/database_client"
@@ -62,5 +64,7 @@ func newFindMovieByIdUseCase(repository ports.MovieRepository) usescases.GetMovi
 	}
 }
 func getMovieRepository() ports.MovieRepository {
-	return nil
+	return &movies.MovieSqlRepository{
+		Connection : database_client.Client,
+	}
 }
