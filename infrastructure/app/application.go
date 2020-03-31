@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/ceiba-meli-demo/movies/application/usescases"
 	"github.com/ceiba-meli-demo/movies/domain/ports"
+	"github.com/ceiba-meli-demo/movies/infrastructure/app/middlewares/error_handler"
 	"github.com/ceiba-meli-demo/movies/infrastructure/controllers"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -17,13 +18,13 @@ type MovieMysqlRepository struct {
 }
 
 func StartApplication() {
-	//logger.Info("about to start the application")
-	router.Run()
-	_ = router.Run(":8081")
+	router.Use(error_handler.ErrorHandler())
 	movieRepository := getMovieRepository()
 	var handler = createHandler(movieRepository)
 	mapUrls(handler)
 
+	//logger.Info("about to start the application")
+	_ = router.Run(":8081")
 }
 
 func createHandler(movieRepository ports.MovieRepository) controllers.RedirectMovieHandler {
