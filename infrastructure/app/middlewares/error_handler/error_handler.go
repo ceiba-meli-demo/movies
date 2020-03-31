@@ -24,7 +24,7 @@ func ErrorHandler() gin.HandlerFunc {
 			return
 		}
 		// Use reflect.TypeOf(err.Err) to known the type of your error
-		if _, ok := errors.Cause(err.Err).(exceptions.UserNotFound); ok {
+		if _, ok := errors.Cause(err.Err).(exceptions.MovieNotFound); ok {
 			restErr := rest_errors.NewNotFoundError(err.Error())
 			logger.Error(restErr.Message(), restErr)
 			c.JSON(restErr.Status(), restErr)
