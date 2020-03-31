@@ -5,6 +5,9 @@ import (
 	"github.com/ceiba-meli-demo/movies/domain/ports"
 	"github.com/ceiba-meli-demo/movies/infrastructure/app/middlewares/error_handler"
 	"github.com/ceiba-meli-demo/movies/infrastructure/controllers"
+
+	//Guión bajo usado por propositos de testear la conexión. Modificar cuando se vaya a implementar
+	_ "github.com/ceiba-meli-demo/movies/infrastructure/database_client"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
