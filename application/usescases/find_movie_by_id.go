@@ -5,7 +5,7 @@ import (
 	"github.com/ceiba-meli-demo/movies/domain/ports"
 )
 
-type GetMovieByIdUseCase interface {
+type GetMovieByIDUseCase interface {
 	Handler(movieId int64) (model.Movie, error)
 }
 

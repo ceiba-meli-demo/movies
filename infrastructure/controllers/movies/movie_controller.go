@@ -6,44 +6,44 @@ import (
 
 	"github.com/ceiba-meli-demo/movies/application/commands"
 	"github.com/ceiba-meli-demo/movies/application/usescases"
+	"github.com/ceiba-meli-demo/movies/infrastructure/utils/rest_errors"
 	"github.com/gin-gonic/gin"
 )
 
 type RedirectMovieHandler interface {
 	Create(c *gin.Context)
 	Get(c *gin.Context)
-	FindById(c *gin.Context)
+	FindByID(c *gin.Context)
 }
 
 type Handler struct {
 	GetMoviesUseCase    usescases.GetMovieUseCase
-	GetMovieByIdUseCase usescases.GetMovieByIdUseCase
+	GetMovieByIDUseCase usescases.GetMovieByIDUseCase
 	CreateMovieUseCase  usescases.CreateMoviePort
 }
 
-//GetAll method, Find movies
+//Get All method, Find movies
 func (handler *Handler) Get(c *gin.Context) {
 	movies, err := handler.GetMoviesUseCase.Handler()
 	if err != nil {
-		//error
-		c.String(501, err.Error())
+		restErr := rest_errors.NewBadRequestError(err.Error())
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 	c.JSON(http.StatusOK, movies)
 }
 
-//GetById method, Find movies by id
-func (handler *Handler) FindById(c *gin.Context) {
-	movieId, idErr := strconv.ParseInt(c.Param("movie_id"), 10, 64)
+//FindByID method, Find movies by id
+func (handler *Handler) FindByID(c *gin.Context) {
+	movieID, idErr := strconv.ParseInt(c.Param("movie_id"), 10, 64)
 	if idErr != nil {
-		//error
-		c.String(501, idErr.Error())
+		restErr := rest_errors.NewBadRequestError("movie_id should be valid")
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
-	movie, err := handler.GetMovieByIdUseCase.Handler(movieId)
-	if err != nil {
-		//error
-		c.String(501, err.Error())
+	movie, errGet := handler.GetMovieByIDUseCase.Handler(movieId)
+	if errGet != nil {
+		_ = c.Error(errGet)
 		return
 	}
 	c.JSON(http.StatusOK, movie)
@@ -53,8 +53,8 @@ func (handler *Handler) FindById(c *gin.Context) {
 func (handler *Handler) Create(c *gin.Context) {
 	var movieCommand commands.MovieCommand
 	if err := c.ShouldBindJSON(&movieCommand); err != nil {
-		//error
-		c.String(501, err.Error())
+		restErr := rest_errors.NewBadRequestError("invalid json")
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 	result, createMovieErr := handler.CreateMovieUseCase.Handler(movieCommand)
