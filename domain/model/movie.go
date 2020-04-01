@@ -13,7 +13,7 @@ type Movie struct {
 }
 
 //CreateMovie return a valid Movie
-func (movie *Movie) CreateMovie(title string, duration int64, synopsis string) (Movie, error) {
+func (movie *Movie) CreateMovie(id int64, title string, duration int64, synopsis string) (Movie, error) {
 	if err := validators.ValidateRequired(title, "Title should have some value"); err != nil {
 		return Movie{}, err
 	}
@@ -24,6 +24,7 @@ func (movie *Movie) CreateMovie(title string, duration int64, synopsis string) (
 		return Movie{}, err
 	}
 	return Movie{
+		ID: 	id,
 		Title:    title,
 		Duration: duration,
 		Synopsis: synopsis,
