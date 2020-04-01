@@ -8,6 +8,7 @@ import (
 	"github.com/ceiba-meli-demo/movies/infrastructure/adapters/repository/models"
 	"github.com/ceiba-meli-demo/movies/infrastructure/mappers/movie_mapper"
 	"github.com/ceiba-meli-demo/movies/infrastructure/utils/logger"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 )
@@ -24,7 +25,7 @@ type MovieSqlRepository struct {
 func (movieSqlRepository *MovieSqlRepository) GetAll() ([]model.Movie, error) {
 	var moviesDb []models.MovieDb
 	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
-	result, err := collection.Find(context.TODO(), moviesDb)
+	result, err := collection.Find(context.TODO(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,8 +46,9 @@ func (movieSqlRepository *MovieSqlRepository) GetAll() ([]model.Movie, error) {
 
 func (movieSqlRepository *MovieSqlRepository) GetById(movieId int64) (model.Movie, error) {
 	var movieDb models.MovieDb
+	filter := bson.M{"id" : movieDb}
 	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
-	if err:= collection.FindOne(context.TODO(), movieId).Decode(&movieDb); err!= nil {
+	if err:= collection.FindOne(context.TODO(), filter).Decode(&movieDb); err!= nil {
 		log.Fatal(err)
 	}
 	movie := movie_mapper.MovieDbToMovie(movieDb)
