@@ -6,11 +6,15 @@ import (
 	"fmt"
 	"github.com/ceiba-meli-demo/movies/domain/model"
 	"github.com/ceiba-meli-demo/movies/infrastructure/adapters/repository/models"
-	"github.com/ceiba-meli-demo/movies/infrastructure/database_client"
 	"github.com/ceiba-meli-demo/movies/infrastructure/mappers/movie_mapper"
 	"github.com/ceiba-meli-demo/movies/infrastructure/utils/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
+)
+
+const (
+	Schema   = "movie_db"
+	Table   = "movie"
 )
 
 type MovieSqlRepository struct {
@@ -19,7 +23,7 @@ type MovieSqlRepository struct {
 
 func (movieSqlRepository *MovieSqlRepository) GetAll() ([]model.Movie, error) {
 	var moviesDb []models.MovieDb
-	collection := movieSqlRepository.Connection.Database(database_client.Schema).Collection("movies")
+	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
 	result, err := collection.Find(context.TODO(), moviesDb)
 	if err != nil {
 		log.Fatal(err)
@@ -41,7 +45,7 @@ func (movieSqlRepository *MovieSqlRepository) GetAll() ([]model.Movie, error) {
 
 func (movieSqlRepository *MovieSqlRepository) GetById(movieId int64) (model.Movie, error) {
 	var movieDb models.MovieDb
-	collection := movieSqlRepository.Connection.Database(database_client.Schema).Collection("movies")
+	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
 	if err:= collection.FindOne(context.TODO(), movieId).Decode(&movieDb); err!= nil {
 		log.Fatal(err)
 	}
@@ -52,7 +56,7 @@ func (movieSqlRepository *MovieSqlRepository) GetById(movieId int64) (model.Movi
 func (movieSqlRepository *MovieSqlRepository) Save(movie *model.Movie) error{
 	var movieDb models.MovieDb
 	movieDb = movie_mapper.MovieToMovieDb(*movie)
-	collection := movieSqlRepository.Connection.Database(database_client.Schema).Collection("movies")
+	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
 	if _, err := collection.InsertOne(context.TODO(), movieDb); err !=nil{
 		logger.Error(fmt.Sprintf("Can't work with %s", movieDb.Title), err)
 		return errors.New(fmt.Sprint("Can't work with #{movieDb.Title}"))
