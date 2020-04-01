@@ -17,26 +17,29 @@ const (
 	Username = "MONGODB_USERNAME"
 	//Password
 	Password = "MONGODB_PASSWORD"
-	Schema   = "MONGODB_SCHEMA"
 )
 var (
-	Client *mongo.Client
-	)
+	Client        *mongo.Client
+	mongoHost     = os.Getenv(Host)
+	mongoPort, _  = strconv.ParseInt(os.Getenv(Port), 10, 64)
+	mongoUsername = os.Getenv(Username)
+	mongoPassword = os.Getenv(Password)
+)
 
-func init(){
-	var err error
-	mongoHost     := Host
-	mongoPort, _  := strconv.ParseInt(Port, 10, 64)
-	mongoUsername := os.Getenv(Username)
-	mongoPassword := os.Getenv(Password)
+func init() {
+	var error error
 	dataSource := fmt.Sprintf("mongodb://%s:%s@%s:%d", mongoUsername, mongoPassword, mongoHost, mongoPort)
 	clientOptions := options.Client().ApplyURI(dataSource)
-	Client, err = mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		panic(err)
+
+	Client, error = mongo.Connect(context.TODO(), clientOptions)
+
+	if error != nil {
+		panic(error)
 	}
-	err = Client.Ping(context.TODO(), nil)
-	if err != nil {
-		panic(err)
+
+	error = Client.Ping(context.TODO(), nil)
+
+	if error != nil {
+		panic(error)
 	}
 }
