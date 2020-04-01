@@ -46,7 +46,7 @@ func (movieSqlRepository *MovieSqlRepository) GetAll() ([]model.Movie, error) {
 
 func (movieSqlRepository *MovieSqlRepository) GetById(movieId int64) (model.Movie, error) {
 	var movieDb models.MovieDb
-	filter := bson.M{"id" : movieDb}
+	filter := bson.M{"id": movieId}
 	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
 	if err:= collection.FindOne(context.TODO(), filter).Decode(&movieDb); err!= nil {
 		log.Fatal(err)
