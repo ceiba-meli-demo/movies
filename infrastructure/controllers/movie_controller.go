@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"encoding/hex"
 	"net/http"
-	"strconv"
 
 	"github.com/ceiba-meli-demo/movies/application/commands"
 	"github.com/ceiba-meli-demo/movies/application/usescases"
@@ -35,7 +35,8 @@ func (handler *Handler) Get(c *gin.Context) {
 
 //FindByID method, Find movies by id
 func (handler *Handler) FindByID(c *gin.Context) {
-	movieID, idErr := strconv.ParseInt(c.Param("movie_id"), 10, 64)
+	movieID := c.Param("movie_id")
+	_, idErr := hex.DecodeString(movieID)
 	if idErr != nil {
 		restErr := rest_errors.NewBadRequestError("movie_id should be valid")
 		c.JSON(restErr.Status(), restErr)

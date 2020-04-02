@@ -33,7 +33,6 @@ func StartApplication() {
 }
 
 func createHandler(movieRepository ports.MovieRepository) controllers.RedirectMovieHandler {
-
 	return newHandler(newCreateMovieUseCase(movieRepository), newGetMoviesUseCase(movieRepository),
 		newFindMovieByIdUseCase(movieRepository))
 }
@@ -65,6 +64,6 @@ func newFindMovieByIdUseCase(repository ports.MovieRepository) usescases.GetMovi
 }
 func getMovieRepository() ports.MovieRepository {
 	return &movies.MovieSqlRepository{
-		Connection : database_client.Client,
+		Connection: database_client.Client,
 	}
 }
