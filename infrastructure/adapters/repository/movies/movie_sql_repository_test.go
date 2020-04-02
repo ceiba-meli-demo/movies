@@ -77,3 +77,15 @@ func TestMovieSqlRepository_GetById(t *testing.T) {
 	assert.NotEqual(t, movieResult.ID, 5)
 	assert.EqualValues(t, movieResult.ID, movieModel.ID)
 }
+func TestMovieSqlRepository_GetAll(t *testing.T) {
+	var movieModel model.Movie
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
+	if err := movieSqlRepository.Save(&movieModel); err != nil {
+		assert.Fail(t, err.Error())
+	}
+	movieResult, err := movieSqlRepository.GetAll()
+	assert.Nil(t, err)
+	assert.NotNil(t, movieResult)
+	assert.NotEqual(t, movieResult[0].Duration, 5)
+	assert.EqualValues(t, movieResult[0].Title, movieModel.Title)
+}
