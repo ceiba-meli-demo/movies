@@ -4,18 +4,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+
 	"github.com/ceiba-meli-demo/movies/domain/model"
 	"github.com/ceiba-meli-demo/movies/infrastructure/adapters/repository/models"
 	"github.com/ceiba-meli-demo/movies/infrastructure/mappers/movie_mapper"
 	"github.com/ceiba-meli-demo/movies/infrastructure/utils/logger"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 const (
-	Schema   = "movie_db"
-	Table   = "movie"
+	Schema = "movie_db"
+	Table  = "movie"
 )
 
 type MovieSqlRepository struct {
@@ -35,7 +37,7 @@ func (movieSqlRepository *MovieSqlRepository) GetAll() ([]model.Movie, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		moviesDb = append(moviesDb,movie)
+		moviesDb = append(moviesDb, movie)
 	}
 	if err := result.Err(); err != nil {
 		log.Fatal(err)
@@ -44,24 +46,27 @@ func (movieSqlRepository *MovieSqlRepository) GetAll() ([]model.Movie, error) {
 	return movies, nil
 }
 
-func (movieSqlRepository *MovieSqlRepository) GetById(movieId int64) (model.Movie, error) {
+func (movieSqlRepository *MovieSqlRepository) GetById(movieId string) (model.Movie, error) {
 	var movieDb models.MovieDb
-	filter := bson.M{"id": movieId}
+	IDMovie, _ := primitive.ObjectIDFromHex(movieId)
+	filter := bson.M{"_id": IDMovie}
 	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
-	if err:= collection.FindOne(context.TODO(), filter).Decode(&movieDb); err!= nil {
+	if err := collection.FindOne(context.TODO(), filter).Decode(&movieDb); err != nil {
 		log.Fatal(err)
 	}
 	movie := movie_mapper.MovieDbToMovie(movieDb)
 	return movie, nil
 }
 
-func (movieSqlRepository *MovieSqlRepository) Save(movie *model.Movie) error{
+func (movieSqlRepository *MovieSqlRepository) Save(movie *model.Movie) error {
 	var movieDb models.MovieDb
 	movieDb = movie_mapper.MovieToMovieDb(*movie)
 	collection := movieSqlRepository.Connection.Database(Schema).Collection(Table)
-	if _, err := collection.InsertOne(context.TODO(), movieDb); err !=nil{
+	result, err := collection.InsertOne(context.TODO(), movieDb)
+	if err != nil {
 		logger.Error(fmt.Sprintf("Can't work with %s", movieDb.Title), err)
 		return errors.New(fmt.Sprint("Can't work with #{movieDb.Title}"))
 	}
+	movie.ID = result.InsertedID.(primitive.ObjectID).Hex()
 	return nil
 }

@@ -6,15 +6,15 @@ import (
 )
 
 type GetMovieByIDUseCase interface {
-	Handler(movieId int64) (model.Movie, error)
+	Handler(movieID string) (model.Movie, error)
 }
 
 type UseCaseGetMovieById struct {
 	MovieRepository ports.MovieRepository
 }
 
-func (useCaseGetMovieById *UseCaseGetMovieById) Handler(userId int64) (model.Movie, error) {
-	movie, err := useCaseGetMovieById.MovieRepository.GetById(userId)
+func (useCaseGetMovieById *UseCaseGetMovieById) Handler(movieID string) (model.Movie, error) {
+	movie, err := useCaseGetMovieById.MovieRepository.GetById(movieID)
 	if err != nil {
 		return model.Movie{}, err
 	}

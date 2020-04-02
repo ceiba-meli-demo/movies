@@ -7,14 +7,13 @@ import (
 
 func MovieToMovieDb(movie model.Movie) models.MovieDb {
 	var movieDb models.MovieDb
-	movieDb.ID = movie.ID
 	movieDb.Title = movie.Title
 	movieDb.Duration = movie.Duration
 	movieDb.Synopsis = movie.Synopsis
 	return movieDb
 }
 
-	func MovieDbToMovie(movieDb models.MovieDb) model.Movie {
+func MovieDbToMovie(movieDb models.MovieDb) model.Movie {
 	var movie model.Movie
 	movie.ID = movieDb.ID
 	movie.Title = movieDb.Title
