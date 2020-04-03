@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	movieSqlRepository MovieSqlRepository
+	movieNoSqlRepository MovieNoSqlRepository
 )
 
 func TestMain(m *testing.M) {
@@ -48,7 +48,7 @@ func load() (testcontainers.Container, context.Context) {
 	_ = os.Setenv("MONGODB_USERNAME", "mongousername")
 	_ = os.Setenv("MONGODB_PASSWORD", "password")
 
-	movieSqlRepository = MovieSqlRepository{
+	movieNoSqlRepository = MovieNoSqlRepository{
 		Connection:database_client.GetDatabaseInstance(),
 	}
 	return mongoC, ctx
@@ -59,10 +59,10 @@ func beforeAll(container testcontainers.Container, ctx context.Context) {
 func TestMovieSqlRepository_GetAll(t *testing.T) {
 	var movieModel model.Movie
 	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
-	if err := movieSqlRepository.Save(&movieModel); err != nil {
+	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
-	movieResult, err := movieSqlRepository.GetAll()
+	movieResult, err := movieNoSqlRepository.GetAll()
 	assert.Nil(t, err)
 	assert.NotNil(t, movieResult)
 	assert.NotEqual(t, movieResult[0].Duration, 5)
@@ -72,10 +72,10 @@ func TestMovieSqlRepository_GetAll(t *testing.T) {
 func TestMovieSqlRepository_GetById(t *testing.T) {
 	var movieModel model.Movie
 	movieModel, _ = movieModel.CreateMovie("Mi peli", 2, "synopsit")
-	if err := movieSqlRepository.Save(&movieModel); err != nil {
+	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
-	movieResult, err := movieSqlRepository.GetById(movieModel.ID)
+	movieResult, err := movieNoSqlRepository.GetById(movieModel.ID)
 	assert.Nil(t, err)
 	assert.NotNil(t, movieResult)
 	assert.NotEqual(t, movieResult.ID, 5)
@@ -85,7 +85,7 @@ func TestMovieSqlRepository_GetById(t *testing.T) {
 func TestMovieSqlRepository_Save(t *testing.T) {
 	var movie model.Movie
 	movie, _ = movie.CreateMovie("Mi peli", 2, "synopsit")
-	err := movieSqlRepository.Save(&movie)
+	err := movieNoSqlRepository.Save(&movie)
 	assert.Nil(t, err)
 	assert.EqualValues(t, movie.Title, "Mi peli")
 	assert.NotEqual(t, movie.Title, "sistemas31")
@@ -97,7 +97,7 @@ func TestMovieSqlRepository_SaveErrorTitle(t *testing.T) {
 	movieModel.Duration=0
 	movieModel.Title=""
 	movieModel.Synopsis=""
-	if err := movieSqlRepository.Save(&movieModel); err != nil {
+	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
 }
@@ -105,7 +105,7 @@ func TestMovieSqlRepository_SaveErrorTitle(t *testing.T) {
 func TestMovieSqlRepository_SaveErrorDuration(t *testing.T) {
 	var movieModel model.Movie
 	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "synopsit")
-	if err := movieSqlRepository.Save(&movieModel); err != nil {
+	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
 }
@@ -113,7 +113,7 @@ func TestMovieSqlRepository_SaveErrorDuration(t *testing.T) {
 func TestMovieSqlRepository_SaveErrorSynopsis(t *testing.T) {
 	var movieModel model.Movie
 	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "")
-	if err := movieSqlRepository.Save(&movieModel); err != nil {
+	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
 }
