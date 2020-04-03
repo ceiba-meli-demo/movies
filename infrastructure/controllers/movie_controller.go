@@ -6,6 +6,7 @@ import (
 
 	"github.com/ceiba-meli-demo/movies/application/commands"
 	"github.com/ceiba-meli-demo/movies/application/usescases"
+	"github.com/ceiba-meli-demo/movies/infrastructure/app/middlewares/users"
 	"github.com/ceiba-meli-demo/movies/infrastructure/utils/rest_errors"
 	"github.com/gin-gonic/gin"
 )
@@ -61,6 +62,10 @@ func (handler *Handler) Create(c *gin.Context) {
 	result, createMovieErr := handler.CreateMovieUseCase.Handler(movieCommand)
 	if createMovieErr != nil {
 		_ = c.Error(createMovieErr)
+		return
+	}
+	if _, err := users.UpdateUser(movieCommand.Dni); err != nil {
+		_ = c.Error(err)
 		return
 	}
 	c.JSON(http.StatusCreated, result)
