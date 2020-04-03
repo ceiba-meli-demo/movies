@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/hex"
-	"fmt"
 	"net/http"
 
 	"github.com/ceiba-meli-demo/movies/application/commands"
@@ -55,7 +54,6 @@ func (handler *Handler) FindByID(c *gin.Context) {
 //Create method controller, get json type movie
 func (handler *Handler) Create(c *gin.Context) {
 	var movieCommand commands.MovieCommand
-	fmt.Println(movieCommand)
 	if err := c.ShouldBindJSON(&movieCommand); err != nil {
 		restErr := rest_errors.NewBadRequestError("invalid json")
 		c.JSON(restErr.Status(), restErr)
