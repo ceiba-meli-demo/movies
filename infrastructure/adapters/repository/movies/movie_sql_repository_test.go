@@ -56,13 +56,17 @@ func load() (testcontainers.Container, context.Context) {
 func beforeAll(container testcontainers.Container, ctx context.Context) {
 	_ = container.Terminate(ctx)
 }
-func TestMovieSqlRepository_Save(t *testing.T) {
-	var movie model.Movie
-	movie, _ = movie.CreateMovie("Mi peli", 2, "synopsit")
-	err := movieSqlRepository.Save(&movie)
+func TestMovieSqlRepository_GetAll(t *testing.T) {
+	var movieModel model.Movie
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
+	if err := movieSqlRepository.Save(&movieModel); err != nil {
+		assert.Fail(t, err.Error())
+	}
+	movieResult, err := movieSqlRepository.GetAll()
 	assert.Nil(t, err)
-	assert.EqualValues(t, movie.Title, "Mi peli")
-	assert.NotEqual(t, movie.Title, "sistemas31")
+	assert.NotNil(t, movieResult)
+	assert.NotEqual(t, movieResult[0].Duration, 5)
+	assert.EqualValues(t, movieResult[0].Title, movieModel.Title)
 }
 
 func TestMovieSqlRepository_GetById(t *testing.T) {
@@ -77,15 +81,40 @@ func TestMovieSqlRepository_GetById(t *testing.T) {
 	assert.NotEqual(t, movieResult.ID, 5)
 	assert.EqualValues(t, movieResult.ID, movieModel.ID)
 }
-func TestMovieSqlRepository_GetAll(t *testing.T) {
+
+func TestMovieSqlRepository_Save(t *testing.T) {
+	var movie model.Movie
+	movie, _ = movie.CreateMovie("Mi peli", 2, "synopsit")
+	err := movieSqlRepository.Save(&movie)
+	assert.Nil(t, err)
+	assert.EqualValues(t, movie.Title, "Mi peli")
+	assert.NotEqual(t, movie.Title, "sistemas31")
+}
+
+func TestMovieSqlRepository_SaveErrorTitle(t *testing.T) {
 	var movieModel model.Movie
 	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
+	movieModel.Duration=0
+	movieModel.Title=""
+	movieModel.Synopsis=""
 	if err := movieSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
-	movieResult, err := movieSqlRepository.GetAll()
-	assert.Nil(t, err)
-	assert.NotNil(t, movieResult)
-	assert.NotEqual(t, movieResult[0].Duration, 5)
-	assert.EqualValues(t, movieResult[0].Title, movieModel.Title)
 }
+
+func TestMovieSqlRepository_SaveErrorDuration(t *testing.T) {
+	var movieModel model.Movie
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "synopsit")
+	if err := movieSqlRepository.Save(&movieModel); err != nil {
+		assert.Fail(t, err.Error())
+	}
+}
+
+func TestMovieSqlRepository_SaveErrorSynopsis(t *testing.T) {
+	var movieModel model.Movie
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "")
+	if err := movieSqlRepository.Save(&movieModel); err != nil {
+		assert.Fail(t, err.Error())
+	}
+}
+
