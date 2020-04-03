@@ -2,7 +2,6 @@ package movies
 
 import (
 	"context"
-	"fmt"
 	"github.com/ceiba-meli-demo/movies/domain/model"
 	_ "github.com/ceiba-meli-demo/movies/infrastructure/adapters/repository/models"
 	"github.com/ceiba-meli-demo/movies/infrastructure/database_client"
