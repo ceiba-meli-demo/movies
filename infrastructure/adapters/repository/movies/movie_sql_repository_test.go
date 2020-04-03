@@ -58,7 +58,7 @@ func beforeAll(container testcontainers.Container, ctx context.Context) {
 }
 func TestMovieSqlRepository_Save(t *testing.T) {
 	var movie model.Movie
-	movie, _ = movie.CreateMovie("Mi peli", 2, "synopsit")
+	movie, _ = movie.CreateMovie("Mi peli2", 2, "synopsit")
 	err := movieSqlRepository.Save(&movie)
 	assert.Nil(t, err)
 	assert.EqualValues(t, movie.Title, "Mi peli")
