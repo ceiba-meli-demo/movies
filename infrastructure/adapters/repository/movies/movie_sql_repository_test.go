@@ -79,7 +79,7 @@ func TestMovieSqlRepository_GetById(t *testing.T) {
 }
 func TestMovieSqlRepository_GetAll(t *testing.T) {
 	var movieModel model.Movie
-	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
+	movieModel, _ = movieModel.CreateMovie("Mi peli", 2, "synopsit")
 	if err := movieSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
