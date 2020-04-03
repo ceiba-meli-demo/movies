@@ -18,7 +18,7 @@ type RedirectMovieHandler interface {
 }
 
 type Handler struct {
-	GetMoviesUseCase    usescases.GetMovieUseCase
+	GetMoviesUseCase    usescases.GetMoviesUseCase
 	GetMovieByIDUseCase usescases.GetMovieByIDUseCase
 	CreateMovieUseCase  usescases.CreateMoviePort
 }

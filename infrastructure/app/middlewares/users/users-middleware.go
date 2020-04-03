@@ -43,7 +43,7 @@ var (
 func UserRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if err := verifyRequest(c.Request); err != nil {
-			c.JSON(http.StatusBadRequest, err.Error())
+			c.JSON(err.Status(), err)
 			c.Abort()
 			return
 		}
@@ -90,23 +90,14 @@ func getUser(userID string) (*user, rest_errors.RestErr) {
 		Get(fmt.Sprintf("/users/%s", userID))
 	if err != nil {
 		logger.Error(err.Error(), err)
-		restErr := rest_errors.NewInternalServerError(err.Error(), err)
-		return &u, restErr
+		return nil, rest_errors.NewInternalServerError(err.Error(), err)
 	}
 	if resp.StatusCode() > 299 {
+		logger.Error(fmt.Sprintf("error when trying to get user with status code: %d", resp.StatusCode()), err)
 		body := string(resp.Body())
-		restErr := rest_errors.NewRestError(body, resp.StatusCode(), body, nil)
-		return &u, restErr
+		return nil, rest_errors.SToE(body)
 	}
 	return &u, nil
-}
-
-func validateClient() {
-	if usersRestClient == nil {
-		port := fmt.Sprintf(":%s", os.Getenv(portUsersService))
-		host := os.Getenv(hostUsersService)
-		usersRestClient = resty.New().SetHostURL(fmt.Sprintf("http://%s%s", host, port)).SetTimeout(200 * time.Millisecond)
-	}
 }
 
 func UpdateUser(userID int) (*Resp, rest_errors.RestErr) {
@@ -119,13 +110,20 @@ func UpdateUser(userID int) (*Resp, rest_errors.RestErr) {
 		Put(fmt.Sprintf("/users/%d", userID))
 	if err != nil {
 		logger.Error(err.Error(), err)
-		restErr := rest_errors.NewInternalServerError(err.Error(), err)
-		return &r, restErr
+		return nil, rest_errors.NewInternalServerError(err.Error(), err)
 	}
 	if resp.StatusCode() > 299 {
+		logger.Error(fmt.Sprintf("error when trying to update user with status code: %d", resp.StatusCode()), err)
 		body := string(resp.Body())
-		restErr := rest_errors.NewRestError(body, resp.StatusCode(), body, nil)
-		return &r, restErr
+		return nil, rest_errors.SToE(body)
 	}
 	return &r, nil
+}
+
+func validateClient() {
+	if usersRestClient == nil {
+		port := fmt.Sprintf(":%s", os.Getenv(portUsersService))
+		host := os.Getenv(hostUsersService)
+		usersRestClient = resty.New().SetHostURL(fmt.Sprintf("http://%s%s", host, port)).SetTimeout(200 * time.Millisecond)
+	}
 }
