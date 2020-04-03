@@ -20,5 +20,6 @@ require (
 	go.opencensus.io v0.22.3 // indirect
 	go.uber.org/zap v1.14.1
 	golang.org/x/sys v0.0.0-20200331124033-c3d80250170d // indirect
+	gotest.tools v2.2.0+incompatible
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 )
