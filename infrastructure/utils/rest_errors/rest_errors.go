@@ -1,8 +1,6 @@
 package rest_errors
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -47,13 +45,13 @@ func NewRestError(message string, status int, err string, causes []interface{}) 
 	}
 }
 
-func NewRestErrorFromBytes(bytes []byte) (RestErr, error) {
-	var apiErr restErr
-	if err := json.Unmarshal(bytes, &apiErr); err != nil {
-		return nil, errors.New("invalid json")
-	}
-	return apiErr, nil
-}
+//func NewRestErrorFromBytes(bytes []byte) (RestErr, error) {
+//	var apiErr restErr
+//	if err := json.Unmarshal(bytes, &apiErr); err != nil {
+//		return nil, errors.New("invalid json")
+//	}
+//	return apiErr, nil
+//}
 
 func NewBadRequestError(message string) RestErr {
 	return restErr{
@@ -71,13 +69,13 @@ func NewNotFoundError(message string) RestErr {
 	}
 }
 
-func NewUnauthorizedError(message string) RestErr {
-	return restErr{
-		ErrMessage: message,
-		ErrStatus:  http.StatusUnauthorized,
-		ErrError:   "unauthorized",
-	}
-}
+//func NewUnauthorizedError(message string) RestErr {
+//	return restErr{
+//		ErrMessage: message,
+//		ErrStatus:  http.StatusUnauthorized,
+//		ErrError:   "unauthorized",
+//	}
+//}
 
 func NewInternalServerError(message string, err error) RestErr {
 	result := restErr{

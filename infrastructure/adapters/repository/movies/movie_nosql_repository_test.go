@@ -80,8 +80,13 @@ func TestMovieNoSqlRepository_GetById(t *testing.T) {
 }
 func TestMovieNoSqlRepository_GetAll(t *testing.T) {
 	var movieModel model.Movie
+<<<<<<< HEAD:infrastructure/adapters/repository/movies/movie_nosql_repository_test.go
 	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
 	if err := MovieNoSqlRepository.Save(&movieModel); err != nil {
+=======
+	movieModel, _ = movieModel.CreateMovie("Mi peli", 2, "synopsit")
+	if err := movieSqlRepository.Save(&movieModel); err != nil {
+>>>>>>> domain-tests:infrastructure/adapters/repository/movies/movie_sql_repository_test.go
 		assert.Fail(t, err.Error())
 	}
 	movieResult, err := MovieNoSqlRepository.GetAll()
