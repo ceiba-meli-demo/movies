@@ -19,7 +19,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	fmt.Println("about to start oauth tests")
 	containerMockServer, ctx := load()
 	code := m.Run()
 	beforeAll(containerMockServer, ctx)
@@ -117,4 +116,3 @@ func TestMovieSqlRepository_SaveErrorSynopsis(t *testing.T) {
 		assert.Fail(t, err.Error())
 	}
 }
-
