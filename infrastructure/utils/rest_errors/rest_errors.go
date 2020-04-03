@@ -90,3 +90,16 @@ func NewInternalServerError(message string, err error) RestErr {
 	}
 	return result
 }
+
+func SToE(errorString string) RestErr {
+	var rErr restErr
+	if err := json.Unmarshal([]byte(errorString), &rErr); err != nil {
+		return NewInternalServerError("error when trying to decode string to RestError", err)
+	}
+	return restErr{
+		ErrMessage: rErr.ErrMessage,
+		ErrStatus:  rErr.ErrStatus,
+		ErrError:   rErr.ErrError,
+		ErrCauses:  rErr.ErrCauses,
+	}
+}

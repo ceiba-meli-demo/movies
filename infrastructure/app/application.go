@@ -37,7 +37,7 @@ func createHandler(movieRepository ports.MovieRepository) controllers.RedirectMo
 		newFindMovieByIdUseCase(movieRepository))
 }
 
-func newHandler(createMovie usescases.CreateMoviePort, getMoviesUseCase usescases.GetMovieUseCase, getMovieByID usescases.GetMovieByIDUseCase) controllers.RedirectMovieHandler {
+func newHandler(createMovie usescases.CreateMoviePort, getMoviesUseCase usescases.GetMoviesUseCase, getMovieByID usescases.GetMovieByIDUseCase) controllers.RedirectMovieHandler {
 	return &controllers.Handler{
 		CreateMovieUseCase:  createMovie,
 		GetMoviesUseCase:    getMoviesUseCase,
@@ -51,8 +51,8 @@ func newCreateMovieUseCase(repository ports.MovieRepository) usescases.CreateMov
 	}
 }
 
-func newGetMoviesUseCase(repository ports.MovieRepository) usescases.GetMovieUseCase {
-	return &usescases.UseCaseGetMovie{
+func newGetMoviesUseCase(repository ports.MovieRepository) usescases.GetMoviesUseCase {
+	return &usescases.UseCaseGetMovies{
 		MovieRepository: repository,
 	}
 }
@@ -63,7 +63,7 @@ func newFindMovieByIdUseCase(repository ports.MovieRepository) usescases.GetMovi
 	}
 }
 func getMovieRepository() ports.MovieRepository {
-	return &movies.MovieSqlRepository{
+	return &movies.MovieNoSqlRepository{
 		Connection: database_client.GetDatabaseInstance(),
 	}
 }
