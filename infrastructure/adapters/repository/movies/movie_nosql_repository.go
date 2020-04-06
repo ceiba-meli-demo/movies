@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/ceiba-meli-demo/movies/domain/exceptions"
 	"github.com/ceiba-meli-demo/movies/domain/model"
 	"github.com/ceiba-meli-demo/movies/infrastructure/adapters/repository/models"
 	"github.com/ceiba-meli-demo/movies/infrastructure/mappers/movie_mapper"
@@ -15,17 +16,19 @@ import (
 )
 
 const (
-	Schema = "movie_db"
-	Table  = "movie"
+	schema     = "movie_db"
+	collection = "movie"
 )
 
-type MovieNoSqlRepository struct {
+// MovieNoSQLRepository public struct
+type MovieNoSQLRepository struct {
 	Connection *mongo.Client
 }
 
-func (MovieNoSqlRepository *MovieNoSqlRepository) GetAll() ([]model.Movie, error) {
+// GetAll retrieve all movies from DB
+func (movieNoSQLRepository *MovieNoSQLRepository) GetAll() ([]model.Movie, error) {
 	var moviesDb []models.MovieDb
-	collection := MovieNoSqlRepository.Connection.Database(Schema).Collection(Table)
+	collection := movieNoSQLRepository.Connection.Database(schema).Collection(collection)
 	result, err := collection.Find(context.TODO(), bson.D{})
 	if err != nil {
 		logger.Error("collection is empty or dont exists", err)
@@ -48,23 +51,25 @@ func (MovieNoSqlRepository *MovieNoSqlRepository) GetAll() ([]model.Movie, error
 	return movies, nil
 }
 
-func (MovieNoSqlRepository *MovieNoSqlRepository) GetById(movieId string) (model.Movie, error) {
+// GetByID find a movie in DB
+func (movieNoSQLRepository *MovieNoSQLRepository) GetByID(movieID string) (model.Movie, error) {
 	var movieDb models.MovieDb
-	IDMovie, _ := primitive.ObjectIDFromHex(movieId)
+	IDMovie, _ := primitive.ObjectIDFromHex(movieID)
 	filter := bson.M{"_id": IDMovie}
-	collection := MovieNoSqlRepository.Connection.Database(Schema).Collection(Table)
+	collection := movieNoSQLRepository.Connection.Database(schema).Collection(collection)
 	if err := collection.FindOne(context.TODO(), filter).Decode(&movieDb); err != nil {
-		logger.Error(fmt.Sprintf("Can't find this id %s", movieId), err)
-		return model.Movie{}, fmt.Errorf("Can't find this id %s", movieId)
+		logger.Error(fmt.Sprintf("Can't find this id %s", movieID), err)
+		return model.Movie{}, exceptions.MovieNotFound{ErrMessage: "Can't find this id " + movieID}
 	}
 	movie := movie_mapper.MovieDbToMovie(movieDb)
 	return movie, nil
 }
 
-func (MovieNoSqlRepository *MovieNoSqlRepository) Save(movie *model.Movie) error {
+// Save create a new movie in DB
+func (movieNoSQLRepository *MovieNoSQLRepository) Save(movie *model.Movie) error {
 	var movieDb models.MovieDb
 	movieDb = movie_mapper.MovieToMovieDb(*movie)
-	collection := MovieNoSqlRepository.Connection.Database(Schema).Collection(Table)
+	collection := movieNoSQLRepository.Connection.Database(schema).Collection(collection)
 	result, err := collection.InsertOne(context.TODO(), movieDb)
 	if err != nil {
 		logger.Error(fmt.Sprintf("Can't work with %s", movieDb.Title), err)

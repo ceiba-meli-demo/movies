@@ -14,7 +14,7 @@ type UseCaseGetMovieById struct {
 }
 
 func (useCaseGetMovieById *UseCaseGetMovieById) Handler(movieID string) (model.Movie, error) {
-	movie, err := useCaseGetMovieById.MovieRepository.GetById(movieID)
+	movie, err := useCaseGetMovieById.MovieRepository.GetByID(movieID)
 	if err != nil {
 		return model.Movie{}, err
 	}

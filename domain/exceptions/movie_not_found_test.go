@@ -1,11 +1,12 @@
 package exceptions
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestMovieNotFound_Error(t *testing.T) {
+func TestMovieNotFoundError(t *testing.T) {
 	const message = "not found"
 	movieNotFound := MovieNotFound{ErrMessage: message}
 
