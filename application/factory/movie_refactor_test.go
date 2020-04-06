@@ -1,10 +1,12 @@
 package factory
 
 import (
+	"testing"
+
 	"github.com/ceiba-meli-demo/movies/application/commands"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
+
 func TestGoodMovieFactory(t *testing.T) {
 	var cmd commands.MovieCommand
 	cmd.Movie.Title = "Eramos muchos y se preño la abuela"
@@ -14,7 +16,7 @@ func TestGoodMovieFactory(t *testing.T) {
 	movie, err := CreateMovie(cmd)
 	assert.NotNil(t, cmd)
 	assert.NotNil(t, movie)
-	assert.True(t, err == nil, "err is equal to nil")
+	assert.Nil(t, err, "err is equal to nil")
 }
 
 func TestBadMovieFactory(t *testing.T) {
@@ -25,5 +27,5 @@ func TestBadMovieFactory(t *testing.T) {
 	movie, err := CreateMovie(cmd)
 	assert.NotNil(t, cmd)
 	assert.NotNil(t, movie)
-	assert.True(t, err != nil, "err is present because synopsis is blank")
+	assert.NotNil(t, err, "err is present because synopsis is blank")
 }

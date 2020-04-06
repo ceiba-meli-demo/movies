@@ -1,11 +1,12 @@
 package exceptions
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestInvalidDuration_Error(t *testing.T) {
+func TestInvalidDurationError(t *testing.T) {
 	const message = "Invalid duration"
 	invalidDuration := InvalidDuration{ErrMessage: message}
 

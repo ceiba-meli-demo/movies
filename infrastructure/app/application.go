@@ -63,7 +63,7 @@ func newFindMovieByIdUseCase(repository ports.MovieRepository) usescases.GetMovi
 	}
 }
 func getMovieRepository() ports.MovieRepository {
-	return &movies.MovieNoSqlRepository{
+	return &movies.MovieNoSQLRepository{
 		Connection: database_client.GetDatabaseInstance(),
 	}
 }
