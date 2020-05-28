@@ -9,6 +9,7 @@ func MovieToMovieDb(movie model.Movie) models.MovieDb {
 	var movieDb models.MovieDb
 	movieDb.Title = movie.Title
 	movieDb.Duration = movie.Duration
+	movieDb.UrlImg = movie.UrlImg
 	movieDb.Synopsis = movie.Synopsis
 	return movieDb
 }
@@ -18,6 +19,7 @@ func MovieDbToMovie(movieDb models.MovieDb) model.Movie {
 	movie.ID = movieDb.ID
 	movie.Title = movieDb.Title
 	movie.Duration = movieDb.Duration
+	movie.UrlImg = movieDb.UrlImg
 	movie.Synopsis = movieDb.Synopsis
 	return movie
 }

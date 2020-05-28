@@ -30,7 +30,7 @@ func load() (testcontainers.Container, context.Context) {
 		ExposedPorts: []string{"27017/tcp"},
 		Env: map[string]string{
 			"MONGO_INITDB_ROOT_USERNAME": "mongousername",
-			"MONGO_INITDB_ROOT_PASSWORD":      "password",
+			"MONGO_INITDB_ROOT_PASSWORD": "password",
 		},
 		WaitingFor: wait.ForLog("Listening on 0.0.0.0"),
 	}
@@ -47,29 +47,17 @@ func load() (testcontainers.Container, context.Context) {
 	_ = os.Setenv("MONGODB_PASSWORD", "password")
 
 	movieNoSqlRepository = MovieNoSqlRepository{
-		Connection:database_client.GetDatabaseInstance(),
+		Connection: database_client.GetDatabaseInstance(),
 	}
 	return mongoC, ctx
 }
 func beforeAll(container testcontainers.Container, ctx context.Context) {
 	_ = container.Terminate(ctx)
 }
-func TestMovieSqlRepository_GetAll(t *testing.T) {
-	var movieModel model.Movie
-	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
-	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
-		assert.Fail(t, err.Error())
-	}
-	movieResult, err := movieNoSqlRepository.GetAll()
-	assert.Nil(t, err)
-	assert.NotNil(t, movieResult)
-	assert.NotEqual(t, movieResult[0].Duration, 5)
-	assert.EqualValues(t, movieResult[0].Title, movieModel.Title)
-}
 
 func TestMovieSqlRepository_GetById(t *testing.T) {
 	var movieModel model.Movie
-	movieModel, _ = movieModel.CreateMovie("Mi peli", 2, "synopsit")
+	movieModel, _ = movieModel.CreateMovie("Mi peli", 2, "https://n9.cl/ts9a", "synopsit")
 	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
@@ -80,9 +68,23 @@ func TestMovieSqlRepository_GetById(t *testing.T) {
 	assert.EqualValues(t, movieResult.ID, movieModel.ID)
 }
 
+func TestMovieSqlRepository_GetAll(t *testing.T) {
+	var movieModel model.Movie
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "https://n9.cl/ts9a", "synopsit")
+	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
+		assert.Fail(t, err.Error())
+	}
+	movieResult, err := movieNoSqlRepository.GetAll()
+	assert.Nil(t, err)
+	assert.NotNil(t, movieResult)
+	assert.NotEqual(t, movieResult[0].Duration, 5)
+	assert.EqualValues(t, movieResult[0].Title, movieModel.Title)
+	assert.EqualValues(t, len(movieResult), 1)
+}
+
 func TestMovieSqlRepository_Save(t *testing.T) {
 	var movie model.Movie
-	movie, _ = movie.CreateMovie("Mi peli", 2, "synopsit")
+	movie, _ = movie.CreateMovie("Mi peli", 2, "https://n9.cl/ts9a", "synopsit")
 	err := movieNoSqlRepository.Save(&movie)
 	assert.Nil(t, err)
 	assert.EqualValues(t, movie.Title, "Mi peli")
@@ -91,10 +93,11 @@ func TestMovieSqlRepository_Save(t *testing.T) {
 
 func TestMovieSqlRepository_SaveErrorTitle(t *testing.T) {
 	var movieModel model.Movie
-	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "synopsit")
-	movieModel.Duration=0
-	movieModel.Title=""
-	movieModel.Synopsis=""
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 2, "https://n9.cl/ts9a", "synopsit")
+	movieModel.Duration = 0
+	movieModel.Title = ""
+	movieModel.UrlImg = ""
+	movieModel.Synopsis = ""
 	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
@@ -102,7 +105,7 @@ func TestMovieSqlRepository_SaveErrorTitle(t *testing.T) {
 
 func TestMovieSqlRepository_SaveErrorDuration(t *testing.T) {
 	var movieModel model.Movie
-	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "synopsit")
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "https://n9.cl/ts9a", "synopsit")
 	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}
@@ -110,7 +113,15 @@ func TestMovieSqlRepository_SaveErrorDuration(t *testing.T) {
 
 func TestMovieSqlRepository_SaveErrorSynopsis(t *testing.T) {
 	var movieModel model.Movie
-	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "")
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "https://n9.cl/ts9a", "")
+	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
+		assert.Fail(t, err.Error())
+	}
+}
+
+func TestMovieSqlRepository_SaveErrorUrlImage(t *testing.T) {
+	var movieModel model.Movie
+	movieModel, _ = movieModel.CreateMovie("Mi peli2", 0, "", "synopsit")
 	if err := movieNoSqlRepository.Save(&movieModel); err != nil {
 		assert.Fail(t, err.Error())
 	}

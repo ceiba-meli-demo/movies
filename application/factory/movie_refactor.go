@@ -7,6 +7,6 @@ import (
 
 func CreateMovie(movieCommand commands.MovieCommand) (model.Movie, error) {
 	var movie model.Movie
-	movie, err := movie.CreateMovie(movieCommand.Movie.Title, movieCommand.Movie.Duration, movieCommand.Movie.Synopsis)
+	movie, err := movie.CreateMovie(movieCommand.Movie.Title, movieCommand.Movie.Duration, movieCommand.Movie.UrlImg, movieCommand.Movie.Synopsis)
 	return movie, err
 }
