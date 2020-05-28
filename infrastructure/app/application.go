@@ -28,7 +28,6 @@ func StartApplication() {
 	var handler = createHandler(movieRepository)
 	mapUrls(handler)
 
-	//logger.Info("about to start the application")
 	_ = router.Run(":8081")
 }
 

@@ -1,6 +1,7 @@
 package rest_errors
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -68,14 +69,6 @@ func NewNotFoundError(message string) RestErr {
 		ErrError:   "not_found",
 	}
 }
-
-//func NewUnauthorizedError(message string) RestErr {
-//	return restErr{
-//		ErrMessage: message,
-//		ErrStatus:  http.StatusUnauthorized,
-//		ErrError:   "unauthorized",
-//	}
-//}
 
 func NewInternalServerError(message string, err error) RestErr {
 	result := restErr{

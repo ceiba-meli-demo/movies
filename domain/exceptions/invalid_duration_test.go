@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestInvalidDuration_Error(t *testing.T) {
+func TestInvalidDurationError(t *testing.T) {
 	const message = "Invalid duration"
 	invalidDuration := InvalidDuration{ErrMessage: message}
 

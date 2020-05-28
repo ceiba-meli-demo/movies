@@ -5,10 +5,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
 func TestGoodMovieFactory(t *testing.T) {
 	var cmd commands.MovieCommand
 	cmd.Movie.Title = "Eramos muchos y se preño la abuela"
 	cmd.Movie.Duration = 120
+	cmd.Movie.UrlImg = "https://n9.cl/ts9a"
 	cmd.Movie.Synopsis = "Triste historia de la vida real"
 
 	movie, err := CreateMovie(cmd)
